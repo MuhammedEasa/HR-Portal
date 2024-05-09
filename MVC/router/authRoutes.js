@@ -3,8 +3,8 @@ const router = express.Router();
 const session = require("express-session");
 require('dotenv').config();
 
-const{getHome,HRMangement,getLogin,getOtp,postOtp} = require('../controller/authController');
-const{postSignup,postLogin,logout} = require('../controller/authController');
+const{getHome,HRMangement,getLogin,getOtp,postOtp,userhome} = require('../controller/authController');
+const{postSignup,postLogin,logout,admin,postAdmin} = require('../controller/authController');
 // const{home} = require('../controller/userController');
 
 
@@ -17,6 +17,10 @@ router.post("/signup", postSignup);
 router.get("/otp", getOtp)
 router.post("/otp", postOtp)
 router.get('/logout',logout)
-
+//role based authenctication
+router.get('/admin',admin)
+router.post('/admin', postAdmin)
+// userhome
+router.get('/userhome',userhome)
 
 module.exports = router;
