@@ -290,3 +290,10 @@ exports.HRMangement = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
+
+exports.logout = (req, res) => {
+  req.session.destroy();
+  res.redirect("/login");
+
+}
