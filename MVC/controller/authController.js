@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const userCollection = require("../model/user");
+const Employee = require("../model/EmployeeSchema");
 const speakeasy = require("speakeasy");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
@@ -320,19 +321,56 @@ exports.postAdmin = (req, res) => {
   }
 };
 
-
 // User Home
-exports.userhome =async (req,res)=>{
+exports.userhome = async (req, res) => {
   try {
-console.log();
-const userId = req.session.user.userId;
-const user = await userCollection.findOne({_id:userId})
-console.log(user);
-    res.render("userhome", {user})
+    console.log();
+    const userId = req.session.user.userId;
+    const user = await userCollection.findOne({ _id: userId });
+    const userdetails = await Employee.findOne({userId:userId})
+    console.log(user,userdetails);
+   
+    res.render("userhome", { user ,userdetails});
   } catch (error) {
     console.log("error in userhome get", error);
   }
-}
+};
+
+exports.addDetails = (req, res) => {
+  try {
+    res.render("EmployeeForm");
+  } catch (error) {
+    console.log("error in adddetails get", error);
+  }
+};
+
+exports.PostaddDetails = async (req, res) => {
+  const userId = req.session.user.userId;
+  console.log("session in post add details",userId);
+  try {
+    const { firstName, lastName, email, age, department, position, salary } =
+      req.body;
+
+    // Create a new employee document
+    const newEmployee = new Employee({
+      firstName,
+      lastName,
+      email,
+      age,
+      department,
+      position,
+      salary,
+      userId:userId
+    });
+
+    // Save the employee document to MongoDB
+    newEmployee.save()
+    res.redirect('/userhome')
+  } catch (error) {
+    console.log("error in POST addDetails", error);
+  }
+};
+
 exports.logout = (req, res) => {
   req.session.destroy();
   res.redirect("/login");
